@@ -1,0 +1,10 @@
+all:
+  hosts:
+    
+    all:
+      dir: site/    # Dir to deploy to
+      options:
+        rsync-dir: config
+        rsync-options: -azC --force --delete --progress
+      ssh: ssh    # Path to ssh
+      ssh-options: -o StrictHostKeyChecking=no    # ssh options
