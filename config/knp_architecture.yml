@@ -5,6 +5,10 @@ all:
       dir: site/    # Dir to deploy to
       options:
         rsync-dir: config
-        rsync-options: -azC --force --delete --progress
+        rsync-options: --archive --force --delete --progress --whole-file --compress
+        # --archive is archive (preverve links)
+        # --whole-file
+        # --force                 force la suppression de répertoires même non-vides
+        # --compress              transfert en compressant les données
       ssh: ssh    # Path to ssh
       ssh-options: -o StrictHostKeyChecking=no    # ssh options
