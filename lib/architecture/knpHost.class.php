@@ -1,8 +1,5 @@
 <?php 
 
-/**
-* 
-*/
 class knpHost
 {
   protected $alias, $architecture, $config = null;
@@ -23,7 +20,32 @@ class knpHost
   public function deploy()
   {
     $cmd = $this->getDeployCommand();
+    $this->prepareCodeForDeployment(true);
     $this->exec($cmd);
+    $this->prepareCodeForDeployment(false);
+  }
+  
+  protected function prepareCodeForDeployment($up)
+  {
+    $databasesConfPath = sfConfig::get('sf_config_dir') . '/databases.yml';
+    $codePreparation = $this->architecture->getConfig('code-preparation', array());
+
+    if(isset($codePreparation['databases.yml'])) {
+      $deployDatabasesConfPath = sfConfig::get('sf_config_dir') . '/' . $codePreparation['databases.yml'];
+      if($up) {
+        @unlink($databasesConfPath . '.bak');
+        if(file_exists($databasesConfPath)) {
+          rename($databasesConfPath, $databasesConfPath . '.bak');
+        }
+        copy($deployDatabasesConfPath, $databasesConfPath);
+        
+      } else {
+        @unlink($databasesConfPath);
+        if(file_exists($databasesConfPath . '.bak')) {
+          rename($databasesConfPath . '.bak', $databasesConfPath);
+        }
+      }
+    }
   }
   
   public function localUpdate()
