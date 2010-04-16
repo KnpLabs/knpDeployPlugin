@@ -3,6 +3,7 @@
 class knpHost
 {
   protected $alias, $architecture, $config = null;
+  protected $isEntry = false;
   
   function __construct($alias, $architecture)
   {
@@ -17,6 +18,11 @@ class knpHost
     );
   }
   
+  public function setIsEntry($isEntry)
+  {
+    $this->isEntry = $isEntry;
+  }
+  
   public function deploy()
   {
     $cmd = $this->getDeployCommand();
@@ -27,6 +33,9 @@ class knpHost
   
   protected function prepareCodeForDeployment($up)
   {
+    if(!$this->isEntry) {
+      return;
+    }
     $databasesConfPath = sfConfig::get('sf_config_dir') . '/databases.yml';
     $codePreparation = $this->architecture->getConfig('code-preparation', array());
 

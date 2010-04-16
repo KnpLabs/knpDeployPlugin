@@ -32,7 +32,7 @@ class knpArchitecture
     
     if(isset($this->config['entry'])) {
       $entryHost = $this->getHost($this->config['entry']);
-
+      $entryHost->setIsEntry(true);
       $entryHost->deploy();
       
       $entryHost->remoteDeploy($arguments, $options);
