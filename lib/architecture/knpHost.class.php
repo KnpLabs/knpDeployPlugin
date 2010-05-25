@@ -31,6 +31,13 @@ class knpHost
     $this->prepareCodeForDeployment(false);
   }
   
+  public function contextualize($txt)
+  {
+    return strtr($txt, array(
+      '{env}' => $this->architecture->getConfig('env'),
+    ));
+  }
+  
   protected function prepareCodeForDeployment($up)
   {
     if(!$this->isEntry) {
@@ -39,19 +46,35 @@ class knpHost
     $databasesConfPath = sfConfig::get('sf_config_dir') . '/databases.yml';
     $codePreparation = $this->architecture->getConfig('code-preparation', array());
 
-    if(isset($codePreparation['databases.yml'])) {
-      $deployDatabasesConfPath = sfConfig::get('sf_config_dir') . '/' . $codePreparation['databases.yml'];
+
+    $env = $this->architecture->getConfig('env');
+    foreach($codePreparation as $destination => $origin) {
+
+      if('databases.yml' == $destination) {
+        $destination = 'config/' . $destination;
+        $origin = 'config/' . $origin;
+      }
+      $origin = $this->contextualize($origin);
+      $destinationPath = sfConfig::get('sf_root_dir') . '/' . $destination;
+      $originPath = sfConfig::get('sf_root_dir') . '/' . $origin;
+      $backupPath = sfConfig::get('sf_root_dir') . '/' . $destination . '.tmp';
+      
       if($up) {
-        @unlink($databasesConfPath . '.bak');
-        if(file_exists($databasesConfPath)) {
-          rename($databasesConfPath, $databasesConfPath . '.bak');
+        if(file_exists($backupPath)) {
+          unlink($backupPath);
         }
-        copy($deployDatabasesConfPath, $databasesConfPath);
+        if(file_exists($destinationPath)) {
+          rename($destinationPath, $backupPath);
+        }
+        copy($originPath, $destinationPath);
         
       } else {
-        @unlink($databasesConfPath);
-        if(file_exists($databasesConfPath . '.bak')) {
-          rename($databasesConfPath . '.bak', $databasesConfPath);
+
+        if(!file_exists($backupPath)) {
+          unlink($destinationPath);
+        }
+        if(file_exists($backupPath)) {
+          rename($backupPath, $destinationPath);
         }
       }
     }
@@ -66,6 +89,7 @@ class knpHost
   {
     $commands = $this->getConfig('post-commands', array());
     foreach($commands as $command) {
+      $command = $this->contextualize($command);
       $this->exec($command);
     }
   }
