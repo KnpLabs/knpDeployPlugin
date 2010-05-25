@@ -133,8 +133,12 @@ class knpHost
     $this->exec($cmd);
   }
   
-  public function getConfig($key)
+  public function getConfig($key, $default = false)
   {
+    if(!isset($this->config[$key]))
+    {
+      return $default;
+    }
     return $this->config[$key];
   }
   
