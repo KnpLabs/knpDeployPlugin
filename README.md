@@ -4,7 +4,7 @@ Deployment plugin for symfony to deploy to multiple servers and exec commands (m
     
 ## Installation
 
-    git submodule add git@github.com:mbontemps/knpDeployPlugin.git plugins/knpDeployPlugin
+    git submodule add git://github.com/knplabs/knpDeployPlugin.git plugins/knpDeployPlugin
     
 ## Configuration
 
