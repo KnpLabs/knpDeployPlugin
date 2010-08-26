@@ -5,7 +5,7 @@ all:
       dir: site/    # Dir to deploy to
       options:
         rsync-dir: config
-        rsync-options: --archive --force --delete --progress --whole-file --compress
+        rsync-options: --archive --force --delete --progress --whole-file --compress --checksum
         # --archive is archive (preverve links)
         # --whole-file
         # --force                 force la suppression de répertoires même non-vides
