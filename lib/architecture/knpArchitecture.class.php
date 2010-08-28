@@ -42,7 +42,7 @@ class knpArchitecture
       foreach($this->getConfig('apps', array()) as $alias) {
         $host = $this->getHost($alias);
         $host->deploy();
-        $host->localUpdate();
+        $host->remoteDeploy($arguments, $options);
       }
     }
   }
