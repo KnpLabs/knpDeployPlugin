@@ -37,6 +37,14 @@ class knpArchitecture
       
       $entryHost->remoteDeploy($arguments, $options);
     }
+    else
+    {
+      foreach($this->getConfig('apps', array()) as $alias) {
+        $host = $this->getHost($alias);
+        $host->deploy();
+        $host->localUpdate();
+      }
+    }
   }
   
   public function localDeploy($alias, array $arguments = array(), $options)
